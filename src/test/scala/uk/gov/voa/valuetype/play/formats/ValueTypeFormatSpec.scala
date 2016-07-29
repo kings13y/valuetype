@@ -20,7 +20,7 @@ import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json.{fromJson, toJson}
 import play.api.libs.json.{JsError, Json}
 import uk.gov.voa.valuetype.play.formats.ValueTypeFormat._
-import uk.gov.voa.valuetype.{TestBigDecimalValue, TestBooleanValue, TestIntValue, TestStringValue}
+import uk.gov.voa.valuetype._
 
 class StringValueTypeFormatSpec extends WordSpec with Matchers {
 
@@ -89,15 +89,36 @@ class BigDecimalValueTypeFormatSpec extends WordSpec with Matchers {
   "BigDecimalValue.format" should {
 
     "allow to serialize given value to json" in {
-      toJson(TestBigDecimalValue(2.1051)) shouldBe Json.parse("2.11")
+      toJson(TestBigDecimalValue(2.1051)) shouldBe Json.parse("2.1051")
     }
 
     "allow deserializing json into an object" in {
-      fromJson(Json.parse("2.1051")).get shouldBe TestBigDecimalValue(2.11)
+      fromJson(Json.parse("2.1051")).get shouldBe TestBigDecimalValue(2.1051)
     }
 
     "fail deserialization when given json is invalid" in {
-      fromJson(Json.parse("\"1\"")) shouldBe a [JsError]
+      fromJson[TestBigDecimalValue](Json.parse("\"1\"")) shouldBe a [JsError]
+    }
+  }
+
+}
+
+class RoundedBigDecimalValueTypeFormatSpec extends WordSpec with Matchers {
+
+  implicit val bigDecimalValueFormat = format(TestRoundedBigDecimalValue.apply)
+
+  "BigDecimalValue.format" should {
+
+    "allow to serialize given value to json" in {
+      toJson(TestRoundedBigDecimalValue(2.105)) shouldBe Json.parse("2.11")
+    }
+
+    "allow deserializing json into an object" in {
+      fromJson(Json.parse("2.105")).get shouldBe TestRoundedBigDecimalValue(2.11)
+    }
+
+    "fail deserialization when given json is invalid" in {
+      fromJson[TestRoundedBigDecimalValue](Json.parse("\"1\"")) shouldBe a [JsError]
     }
   }
 

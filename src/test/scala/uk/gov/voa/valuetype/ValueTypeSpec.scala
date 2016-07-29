@@ -95,10 +95,34 @@ class BooleanValueSpec extends WordSpec with PropertyChecks with Matchers {
 
 class BigDecimalValueSpec extends WordSpec with PropertyChecks with Matchers {
 
-  case class AnotherTestBigDecimalValue(nonRoundedValue: BigDecimal) extends BigDecimalValue {
+  val generatedBigDecimals = arbitrary[BigDecimal]
 
-    protected[this] def isOfThisInstance(other: BigDecimalValue) = other.isInstanceOf[AnotherTestBigDecimalValue]
+  "BigDecimalValue.apply" should {
 
+    "work with all given BigDecimal values" in {
+      forAll(generatedBigDecimals) { value =>
+        println(value)
+        TestBigDecimalValue(value).value shouldBe value
+      }
+    }
+  }
+
+  "BooleanValue.toString" should {
+
+    "be the same as String representation of the given Boolean value" in {
+      forAll(generatedBigDecimals) { value =>
+        TestBigDecimalValue(value).toString shouldBe value.toString
+      }
+    }
+  }
+}
+
+class RoundedBigDecimalValueSpec extends WordSpec with PropertyChecks with Matchers {
+
+  case class AnotherRoundedBigDecimalValue(nonRoundedValue: BigDecimal) extends RoundedBigDecimalValue {
+
+    protected[this] def isOfThisInstance(other: RoundedBigDecimalValue) =
+      other.isInstanceOf[AnotherRoundedBigDecimalValue]
   }
 
   val generatedBigDecimals = arbitrary[Double].map(BigDecimal.apply)
@@ -107,16 +131,16 @@ class BigDecimalValueSpec extends WordSpec with PropertyChecks with Matchers {
 
     "work with all given BigDecimal values" in {
       forAll(generatedBigDecimals) { value =>
-        TestBigDecimalValue(value).value shouldBe value.setScale(2, RoundingMode.HALF_DOWN)
+        TestRoundedBigDecimalValue(value).value shouldBe value.setScale(2, RoundingMode.HALF_UP)
       }
     }
   }
 
   "BigDecimalValue.value" should {
 
-    "be initial value rounded half down using the scale of 2" in {
-      TestBigDecimalValue(2.005).value shouldBe BigDecimal(2.00)
-      TestBigDecimalValue(2.0051).value shouldBe BigDecimal(2.01)
+    "be initial value rounded half up using the scale of 2" in {
+      TestRoundedBigDecimalValue(2.005).value shouldBe BigDecimal(2.01)
+      TestRoundedBigDecimalValue(2.0049).value shouldBe BigDecimal(2.00)
     }
   }
 
@@ -124,7 +148,7 @@ class BigDecimalValueSpec extends WordSpec with PropertyChecks with Matchers {
 
     "be the same as the given value" in {
       forAll(generatedBigDecimals) { value =>
-        TestBigDecimalValue(value).toString shouldBe value.setScale(2, RoundingMode.HALF_DOWN).toString()
+        TestRoundedBigDecimalValue(value).toString shouldBe value.setScale(2, RoundingMode.HALF_UP).toString()
       }
     }
   }
@@ -132,46 +156,46 @@ class BigDecimalValueSpec extends WordSpec with PropertyChecks with Matchers {
   "BigDecimalValue.equals" should {
 
     "use the rounded value for checking equality" in {
-      TestBigDecimalValue(2.005) shouldBe TestBigDecimalValue(2.00)
-      TestBigDecimalValue(2.0051) shouldBe TestBigDecimalValue(2.01)
+      TestRoundedBigDecimalValue(2.005) shouldBe TestRoundedBigDecimalValue(2.01)
+      TestRoundedBigDecimalValue(2.0049) shouldBe TestRoundedBigDecimalValue(2.00)
     }
 
     "return false if compared with different type of BigDecimalValue" in {
-      TestBigDecimalValue(2.005) should not be AnotherTestBigDecimalValue(2.00)
-      TestBigDecimalValue(2.005) should not be AnotherTestBigDecimalValue(2.005)
+      TestRoundedBigDecimalValue(2.005) should not be AnotherRoundedBigDecimalValue(2.01)
+      TestRoundedBigDecimalValue(2.005) should not be AnotherRoundedBigDecimalValue(2.005)
     }
 
     "return false if compared with a non BigDecimalValue" in {
-      TestBigDecimalValue(2) should not be BigDecimal(2.00)
+      TestRoundedBigDecimalValue(2) should not be BigDecimal(2.00)
     }
   }
 
   "BigDecimalValue.hashCode" should {
 
     "return the same values for different instances representing the same value" in {
-      TestBigDecimalValue(2.005).hashCode shouldBe TestBigDecimalValue(2.00).hashCode
-      TestBigDecimalValue(2.0051).hashCode shouldBe TestBigDecimalValue(2.01).hashCode
+      TestRoundedBigDecimalValue(2.005).hashCode shouldBe TestRoundedBigDecimalValue(2.01).hashCode
+      TestRoundedBigDecimalValue(2.0049).hashCode shouldBe TestRoundedBigDecimalValue(2.00).hashCode
     }
 
     "return different values for different instances representing different values" in {
-      TestBigDecimalValue(2.05).hashCode should not be TestBigDecimalValue(2.00).hashCode
+      TestRoundedBigDecimalValue(2.05).hashCode should not be TestRoundedBigDecimalValue(2.00).hashCode
     }
   }
 
   "BigDecimalValue.==" should {
 
     "return true if compared with another instance of the same type representing the same value" in {
-      TestBigDecimalValue(2.005) == TestBigDecimalValue(2.00) shouldBe true
-      TestBigDecimalValue(2.0051) == TestBigDecimalValue(2.01) shouldBe true
+      TestRoundedBigDecimalValue(2.005) == TestRoundedBigDecimalValue(2.01) shouldBe true
+      TestRoundedBigDecimalValue(2.0049) == TestRoundedBigDecimalValue(2.00) shouldBe true
     }
 
     "return false if compared with another instance of the same type representing different value" in {
-      TestBigDecimalValue(2.01) == TestBigDecimalValue(2.00) shouldBe false
+      TestRoundedBigDecimalValue(2.01) == TestRoundedBigDecimalValue(2.00) shouldBe false
     }
 
     "return false if compared with different implementation of the same super type even when representing the same value" in {
-      TestBigDecimalValue(2.005) == AnotherTestBigDecimalValue(2.005) shouldBe false
-      TestBigDecimalValue(2.0051) == AnotherTestBigDecimalValue(2.051) shouldBe false
+      TestRoundedBigDecimalValue(2.005) == AnotherRoundedBigDecimalValue(2.005) shouldBe false
+      TestRoundedBigDecimalValue(2.0049) == AnotherRoundedBigDecimalValue(2.049) shouldBe false
     }
   }
 }

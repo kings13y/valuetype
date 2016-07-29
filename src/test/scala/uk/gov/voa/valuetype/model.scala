@@ -22,8 +22,11 @@ case class TestIntValue(value: Int) extends IntValue
 
 case class TestBooleanValue(value: Boolean) extends BooleanValue
 
-case class TestBigDecimalValue(nonRoundedValue: BigDecimal) extends BigDecimalValue {
+case class TestBigDecimalValue(value: BigDecimal) extends BigDecimalValue
 
-  protected[this] def isOfThisInstance(other: BigDecimalValue) = other.isInstanceOf[TestBigDecimalValue]
+case class TestRoundedBigDecimalValue(nonRoundedValue: BigDecimal) extends RoundedBigDecimalValue {
+
+  protected[this] def isOfThisInstance(other: RoundedBigDecimalValue) =
+    other.isInstanceOf[TestRoundedBigDecimalValue]
 
 }

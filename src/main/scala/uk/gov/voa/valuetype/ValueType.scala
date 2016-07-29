@@ -17,8 +17,9 @@
 package uk.gov.voa.valuetype
 
 import scala.math.BigDecimal.RoundingMode
+import scala.math.BigDecimal.RoundingMode.RoundingMode
 
-sealed trait ValueType[T] {
+trait ValueType[T] {
 
   def value: T
 
@@ -32,20 +33,23 @@ trait IntValue extends ValueType[Int]
 
 trait BooleanValue extends ValueType[Boolean]
 
-trait BigDecimalValue extends ValueType[BigDecimal] {
+trait BigDecimalValue extends ValueType[BigDecimal]
+
+trait RoundedBigDecimalValue extends ValueType[BigDecimal] {
 
   protected[this] def nonRoundedValue: BigDecimal
 
-  val decimalPlaces = 2
+  val decimalPlaces: Int = 2
+  val roundingMode: RoundingMode = RoundingMode.HALF_UP
 
-  final lazy val value = nonRoundedValue.setScale(decimalPlaces, RoundingMode.HALF_DOWN)
+  final lazy val value = nonRoundedValue.setScale(decimalPlaces, roundingMode)
 
   final override def equals(other: Any): Boolean = other match {
-    case that: BigDecimalValue => isOfThisInstance(that) && value == that.value
+    case that: RoundedBigDecimalValue => isOfThisInstance(that) && value == that.value
     case _ => false
   }
 
-  protected[this] def isOfThisInstance(other: BigDecimalValue): Boolean
+  protected[this] def isOfThisInstance(other: RoundedBigDecimalValue): Boolean
 
   final override def hashCode: Int = (41 * value).toInt
 }
