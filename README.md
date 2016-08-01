@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/hmrc/valuetype.svg?branch=master)](https://travis-ci.org/hmrc/valuetype) [ ![Download](https://api.bintray.com/packages/hmrc/releases/valuetype/images/download.svg) ](https://bintray.com/hmrc/releases/valuetype/_latestVersion)
 
-This is a micro-library introducing Value Type (tiny type) trait and some subtraits for simple types like String, Int, Boolean and BigDecimal.
+A scala micro-library introducing Value Type (tiny type) trait and some subtraits for simple types like String, Int, Boolean and BigDecimal.
 It also contains tooling for creating Play JSON format and PathBinders for derived types.
 
 ### Play JSON format
