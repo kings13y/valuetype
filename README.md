@@ -52,7 +52,7 @@ Include the following dependency in your SBT build
 ```scala
 resolvers += Resolver.bintrayRepo("hmrc", "releases")
 
-libraryDependencies += "uk.gov.voa" %% "valuetype" % "<INSERT VERSION>"
+libraryDependencies += "uk.gov.hmrc" %% "valuetype" % "<INSERT VERSION>"
 ```
 
 ### License
