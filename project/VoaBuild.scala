@@ -20,7 +20,6 @@ object VoaBuild extends Build {
   lazy val valuetype = Project(appName, file("."))
     .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
     .settings(scalaSettings ++ scoverageSettings: _*)
-    .settings(organization := "uk.gov.voa")
     .settings(
       targetJvm := "jvm-1.8",
       libraryDependencies ++= AppDependencies(),
