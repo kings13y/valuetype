@@ -77,7 +77,6 @@ class BooleanValueSpec extends WordSpec with PropertyChecks with Matchers {
 
     "work for any Boolean" in {
       forAll(booleans) { value =>
-        println(value)
         TestBooleanValue(value).value shouldBe value
       }
     }
@@ -101,7 +100,6 @@ class BigDecimalValueSpec extends WordSpec with PropertyChecks with Matchers {
 
     "work with all given BigDecimal values" in {
       forAll(generatedBigDecimals) { value =>
-        println(value)
         TestBigDecimalValue(value).value shouldBe value
       }
     }
