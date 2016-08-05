@@ -4,6 +4,24 @@ import org.scalatest.{Matchers, WordSpec}
 
 class StringOptionsSpec extends WordSpec with Matchers {
 
+  sealed trait TestStringOption extends StringValue
+
+  object TestStringOption extends StringOptions[TestStringOption] {
+
+    case object TestOption1 extends TestStringOption {
+      val value = "1"
+    }
+
+    case object TestOption2 extends TestStringOption {
+      val value = "2"
+    }
+
+    val all = Seq(
+      TestOption1,
+      TestOption2
+    )
+  }
+
   import TestStringOption._
 
   "all" should {

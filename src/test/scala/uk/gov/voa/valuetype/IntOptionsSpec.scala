@@ -3,6 +3,29 @@ package uk.gov.voa.valuetype
 import org.scalatest.{Matchers, WordSpec}
 
 class IntOptionsSpec extends WordSpec with Matchers {
+  
+  sealed trait TestIntOption extends IntValue
+
+  object TestIntOption extends IntOptions[TestIntOption] {
+
+    case object TestOption5 extends TestIntOption {
+      val value = 5
+    }
+
+    case object TestOption6 extends TestIntOption {
+      val value = 6
+    }
+
+    case object TestOption7 extends TestIntOption {
+      val value = 7
+    }
+
+    val all = Seq(
+      TestOption5,
+      TestOption6,
+      TestOption7
+    )
+  }
 
   import TestIntOption._
 
