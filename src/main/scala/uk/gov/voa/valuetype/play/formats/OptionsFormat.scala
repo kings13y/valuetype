@@ -52,6 +52,20 @@ trait OptionsFormat {
     def writes(option: VT): JsValue = JsNumber(option.value)
   }
 
+  implicit def longOptionsFormat[VT <: LongValue](options: Options[Long, VT]): Format[VT] = new Format[VT] {
+
+    def reads(json: JsValue): JsResult[VT] = json match {
+      case JsNumber(value) if value.isValidLong => options.get(value.toLong) match {
+        case Some(foundOption) => JsSuccess(foundOption)
+        case _ => JsError(s"'$value' not a valid option")
+      }
+      case JsNumber(nonLong) => JsError(s"[$nonLong] is not a valid value: Expected a Long option")
+      case other => JsError(s"[$other.getClass] is not a valid value: Expected an Long option")
+    }
+
+    def writes(option: VT): JsValue = JsNumber(option.value)
+  }
+
   def optionsFormat[T, VT <: ValueType[T]](options: Options[T, VT])
                                           (implicit valueTypeFormat: Options[T, VT] => Format[VT]): Format[VT] =
     valueTypeFormat(options)

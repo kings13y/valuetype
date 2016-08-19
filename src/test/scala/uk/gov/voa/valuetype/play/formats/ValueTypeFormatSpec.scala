@@ -62,6 +62,26 @@ class IntValueTypeFormatSpec extends WordSpec with Matchers {
   }
 }
 
+class LongValueTypeFormatSpec extends WordSpec with Matchers {
+
+  implicit val longValueFormat = format(TestLongValue.apply)
+
+  "LongValue.format" should {
+
+    "allow to serialize given value to json" in {
+      Json.toJson(TestLongValue(1)) shouldBe Json.parse("1")
+    }
+
+    "allow deserializing json longo an object" in {
+      Json.fromJson(Json.parse("1")).get shouldBe TestLongValue(1)
+    }
+
+    "fail deserialization when given json is invalid" in {
+      fromJson(Json.parse("\"1\"")) shouldBe a [JsError]
+    }
+  }
+}
+
 class BooleanValueTypeFormatSpec extends WordSpec with Matchers {
 
   implicit val booleanValueFormat = format(TestBooleanValue.apply)
@@ -121,5 +141,4 @@ class RoundedBigDecimalValueTypeFormatSpec extends WordSpec with Matchers {
       fromJson[TestRoundedBigDecimalValue](Json.parse("\"1\"")) shouldBe a [JsError]
     }
   }
-
 }

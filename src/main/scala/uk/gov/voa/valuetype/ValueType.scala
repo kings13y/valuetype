@@ -31,6 +31,8 @@ trait StringValue extends ValueType[String]
 
 trait IntValue extends ValueType[Int]
 
+trait LongValue extends ValueType[Long]
+
 trait BooleanValue extends ValueType[Boolean]
 
 trait BigDecimalValue extends ValueType[BigDecimal]
