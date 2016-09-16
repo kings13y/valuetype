@@ -33,6 +33,10 @@ trait ValueTypeFormat {
     case JsNumber(value) if value.isValidInt => value.toInt
   }
 
+  implicit def parseLong: PartialFunction[JsValue, Long] = {
+    case JsNumber(value) if value.isValidLong => value.toLong
+  }
+
   implicit def parseBigDecimal: PartialFunction[JsValue, BigDecimal] = {
     case JsNumber(value) => value
   }
@@ -43,6 +47,7 @@ trait ValueTypeFormat {
 
   implicit val stringToJson = JsString.apply _
   implicit val intToJson = (value: Int) => JsNumber.apply(value)
+  implicit val longToJson = (value: Long) => JsNumber.apply(value)
   implicit val bigDecimalToJson = (value: BigDecimal) => JsNumber.apply(value)
   implicit val booleanToJson = JsBoolean.apply _
 

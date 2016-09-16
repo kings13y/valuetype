@@ -18,7 +18,7 @@ package uk.gov.voa.valuetype.play.formats
 
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json._
-import uk.gov.voa.valuetype.{TestIntOption, TestStringOption}
+import uk.gov.voa.valuetype.{TestIntOption, TestLongOption, TestStringOption}
 
 class OptionsFormatSpec extends WordSpec with Matchers {
 
@@ -30,19 +30,19 @@ class OptionsFormatSpec extends WordSpec with Matchers {
 
     implicit val format = optionsFormat(TestStringOption)
 
-    "allow to serialize the given option to a JsString with value of the given option's value" in {
+    "allow serialization of the given option to a JsString with value of the given option's value" in {
       Json.toJson(TestOption1) shouldBe JsString("1")
     }
 
-    "allow to deserialize the given json String to a relevant Option" in {
+    "allow deserialization of the given JsString to a relevant Option" in {
       Json.fromJson(JsString("2")) shouldBe JsSuccess(TestOption2)
     }
 
-    "return deserialization error when deserializing value for non-exisiting option" in {
+    "return a deserialization error when deserializing a value for a non-exisitent option" in {
       Json.fromJson(JsString("x")) shouldBe a [JsError]
     }
 
-    "return deserialization error when deserializing non-string value" in {
+    "return a deserialization error when deserializing a non-string value" in {
       implicit val format = optionsFormat(TestStringOption)
       Json.fromJson(JsNumber(1)) shouldBe a [JsError]
     }
@@ -54,24 +54,58 @@ class OptionsFormatSpec extends WordSpec with Matchers {
 
     implicit val format = optionsFormat(TestIntOption)
 
-    "allow to serialize the given option to a JsNumber with value of the given option's value" in {
+    "allow serialization of the given option to a JsNumber with value of the given option's value" in {
       Json.toJson(TestOption7) shouldBe JsNumber(7)
     }
 
-    "allow to deserialize the given json Number to a relevant Option" in {
+    "allow deserialization of the given JsNumber to a relevant Option" in {
       Json.fromJson(JsNumber(5)) shouldBe JsSuccess(TestOption5)
     }
 
-    "return deserialization error when deserializing value for non-exisiting option" in {
+    "return a deserialization error when deserializing a value for a non-exisitent option" in {
       Json.fromJson(JsNumber(0)) shouldBe a [JsError]
     }
 
-    "return deserialization error when deserializing non-integer numeric value" in {
+    "return a deserialization error when deserializing a non-integer numeric value" in {
       implicit val format = optionsFormat(TestStringOption)
       Json.fromJson(JsNumber(5.1)) shouldBe a [JsError]
     }
 
-    "return deserialization error when deserializing non-numeric value" in {
+    "return a deserialization error when deserializing an integer numeric value that is too large" in {
+      implicit val format = optionsFormat(TestStringOption)
+      Json.fromJson(JsNumber(Long.MaxValue)) shouldBe a [JsError]
+    }
+
+    "return a deserialization error when deserializing a non-numeric value" in {
+      implicit val format = optionsFormat(TestStringOption)
+      Json.fromJson(JsString("5")) shouldBe a [JsError]
+    }
+  }
+
+  "optionsFormat for LongOptions" should {
+
+    import TestLongOption._
+
+    implicit val format = optionsFormat(TestLongOption)
+
+    "allow serialization of the given option to a JsNumber with value of the given option's value" in {
+      Json.toJson(TestOption7) shouldBe JsNumber(7)
+    }
+
+    "allow deserialization of the given JsNumber to a relevant Option" in {
+      Json.fromJson(JsNumber(5)) shouldBe JsSuccess(TestOption5)
+    }
+
+    "return a deserialization error when deserializing a value for a non-exisitent option" in {
+      Json.fromJson(JsNumber(0)) shouldBe a [JsError]
+    }
+
+    "return a deserialization error when deserializing a non-integer numeric value" in {
+      implicit val format = optionsFormat(TestStringOption)
+      Json.fromJson(JsNumber(5.1)) shouldBe a [JsError]
+    }
+
+    "return a deserialization error when deserializing a non-numeric value" in {
       implicit val format = optionsFormat(TestStringOption)
       Json.fromJson(JsString("5")) shouldBe a [JsError]
     }

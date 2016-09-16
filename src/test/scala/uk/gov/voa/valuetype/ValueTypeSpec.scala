@@ -69,6 +69,29 @@ class IntValueSpec extends WordSpec with PropertyChecks with Matchers {
   }
 }
 
+class LongValueSpec extends WordSpec with PropertyChecks with Matchers {
+
+  val generatedLongs = Gen.choose(Long.MinValue, Long.MaxValue)
+
+  "LongValue.apply" should {
+
+    "work for any Long" in {
+      forAll(generatedLongs) { value =>
+        TestLongValue(value).value shouldBe value
+      }
+    }
+  }
+
+  "LongValue.toString" should {
+
+    "be the same as String representation of the given Long value" in {
+      forAll(generatedLongs) { value =>
+        TestLongValue(value).toString shouldBe value.toString
+      }
+    }
+  }
+}
+
 class BooleanValueSpec extends WordSpec with PropertyChecks with Matchers {
 
   val booleans = Table("Boolean", true, false)

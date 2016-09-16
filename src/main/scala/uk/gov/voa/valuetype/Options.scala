@@ -34,6 +34,8 @@ trait StringOptions[VT <: StringValue] extends Options[String, VT]
 
 trait IntOptions[VT <: IntValue] extends Options[Int, VT]
 
+trait LongOptions[VT <: LongValue] extends Options[Long, VT]
+
 trait Apply[T, VT <: ValueType[T]] {
 
   self: Options[T, VT] =>
@@ -47,4 +49,8 @@ trait StringApply[VT <: StringValue] extends Apply[String, VT] {
 
 trait IntApply[VT <: IntValue] extends Apply[Int, VT] {
   self: IntOptions[VT] =>
+}
+
+trait LongApply[VT <: LongValue] extends Apply[Long, VT] {
+  self: LongOptions[VT] =>
 }

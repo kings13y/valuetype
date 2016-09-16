@@ -57,3 +57,27 @@ object TestIntOption extends IntOptions[TestIntOption] {
     TestOption7
   )
 }
+
+
+sealed trait TestLongOption extends LongValue
+
+object TestLongOption extends LongOptions[TestLongOption] {
+
+  case object TestOption5 extends TestLongOption {
+    val value = 5L
+  }
+
+  case object TestOption6 extends TestLongOption {
+    val value = 6L
+  }
+
+  case object TestOption7 extends TestLongOption {
+    val value = 7L
+  }
+
+  val all = Seq(
+    TestOption5,
+    TestOption6,
+    TestOption7
+  )
+}
