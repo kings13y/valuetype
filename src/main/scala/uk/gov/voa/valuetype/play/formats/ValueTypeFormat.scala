@@ -56,12 +56,11 @@ trait ValueTypeFormat {
                                    toJson: T => JsValue) =
     new Format[V] {
 
-      def reads(json: JsValue): JsResult[V] = Try(parse(json)) match {
-        case Success(value) => JsSuccess(instantiateFromSimpleType(value))
+      def reads(json: JsValue): JsResult[V] = Try(parse(json)).flatMap(t => Try(instantiateFromSimpleType(t))) match {
+        case Success(value) => JsSuccess(value)
         case Failure(e) => JsError(e.getMessage)
       }
 
       def writes(value: V): JsValue = toJson(value.value)
-
     }
 }
