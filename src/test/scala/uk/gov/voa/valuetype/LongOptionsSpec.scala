@@ -16,9 +16,9 @@
 
 package uk.gov.voa.valuetype
 
-import org.scalatest.{Matchers, WordSpec}
+import uk.gov.voa.valuetype.tooling.UnitSpec
 
-class LongOptionsSpec extends WordSpec with Matchers {
+class LongOptionsSpec extends UnitSpec {
 
   import TestLongOption._
 

@@ -16,9 +16,9 @@
 
 package uk.gov.voa.valuetype
 
-import org.scalatest.{Matchers, WordSpec}
+import uk.gov.voa.valuetype.tooling.UnitSpec
 
-class IntApplySpec extends WordSpec with Matchers {
+class IntApplySpec extends UnitSpec {
 
   sealed trait TestValue extends IntValue
 

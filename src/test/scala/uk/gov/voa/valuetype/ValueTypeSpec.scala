@@ -19,11 +19,11 @@ package uk.gov.voa.valuetype
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen
 import org.scalatest.prop.PropertyChecks
-import org.scalatest.{Matchers, WordSpec}
+import uk.gov.voa.valuetype.tooling.UnitSpec
 
 import scala.math.BigDecimal.RoundingMode
 
-class StringValueSpec extends WordSpec with PropertyChecks with Matchers {
+class StringValueSpec extends UnitSpec with PropertyChecks {
 
   val generatedStrings = Gen.alphaStr
 
@@ -46,7 +46,7 @@ class StringValueSpec extends WordSpec with PropertyChecks with Matchers {
   }
 }
 
-class IntValueSpec extends WordSpec with PropertyChecks with Matchers {
+class IntValueSpec extends UnitSpec with PropertyChecks {
 
   val generatedInts = Gen.choose(Int.MinValue, Int.MaxValue)
 
@@ -69,7 +69,7 @@ class IntValueSpec extends WordSpec with PropertyChecks with Matchers {
   }
 }
 
-class LongValueSpec extends WordSpec with PropertyChecks with Matchers {
+class LongValueSpec extends UnitSpec with PropertyChecks {
 
   val generatedLongs = Gen.choose(Long.MinValue, Long.MaxValue)
 
@@ -92,7 +92,7 @@ class LongValueSpec extends WordSpec with PropertyChecks with Matchers {
   }
 }
 
-class BooleanValueSpec extends WordSpec with PropertyChecks with Matchers {
+class BooleanValueSpec extends UnitSpec with PropertyChecks {
 
   val booleans = Table("Boolean", true, false)
 
@@ -115,7 +115,7 @@ class BooleanValueSpec extends WordSpec with PropertyChecks with Matchers {
   }
 }
 
-class BigDecimalValueSpec extends WordSpec with PropertyChecks with Matchers {
+class BigDecimalValueSpec extends UnitSpec with PropertyChecks {
 
   val generatedBigDecimals = arbitrary[BigDecimal]
 
@@ -138,7 +138,7 @@ class BigDecimalValueSpec extends WordSpec with PropertyChecks with Matchers {
   }
 }
 
-class RoundedBigDecimalValueSpec extends WordSpec with PropertyChecks with Matchers {
+class RoundedBigDecimalValueSpec extends UnitSpec with PropertyChecks {
 
   case class AnotherRoundedBigDecimalValue(nonRoundedValue: BigDecimal) extends RoundedBigDecimalValue {
 
@@ -218,5 +218,33 @@ class RoundedBigDecimalValueSpec extends WordSpec with PropertyChecks with Match
       TestRoundedBigDecimalValue(2.005) == AnotherRoundedBigDecimalValue(2.005) shouldBe false
       TestRoundedBigDecimalValue(2.0049) == AnotherRoundedBigDecimalValue(2.049) shouldBe false
     }
+  }
+}
+
+private case class NotNestedType(value: String) extends StringValue {
+  val name = typeName
+}
+
+class TypeNameSpec extends UnitSpec {
+
+
+  "TypeName" should {
+
+    "provide type name" in {
+      case class NestedType(value: String) extends StringValue {
+        val name = typeName
+      }
+
+      NotNestedType("abc").name shouldBe "NotNestedType"
+    }
+
+    "provide type name without dollar sign for nested types" in {
+      case class NestedType(value: String) extends StringValue {
+        val name = typeName
+      }
+
+      NestedType("abc").name shouldBe "NestedType"
+    }
+
   }
 }

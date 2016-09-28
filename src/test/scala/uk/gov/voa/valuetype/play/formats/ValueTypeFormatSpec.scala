@@ -16,13 +16,13 @@
 
 package uk.gov.voa.valuetype.play.formats
 
-import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json.{fromJson, toJson}
 import play.api.libs.json._
-import uk.gov.voa.valuetype.play.formats.ValueTypeFormat._
 import uk.gov.voa.valuetype._
+import uk.gov.voa.valuetype.play.formats.ValueTypeFormat._
+import uk.gov.voa.valuetype.tooling.UnitSpec
 
-class StringValueTypeFormatSpec extends WordSpec with Matchers {
+class StringValueTypeFormatSpec extends UnitSpec {
 
   implicit val stringValueFormat = format(TestStringValue.apply)
 
@@ -42,7 +42,7 @@ class StringValueTypeFormatSpec extends WordSpec with Matchers {
   }
 }
 
-class IntValueTypeFormatSpec extends WordSpec with Matchers {
+class IntValueTypeFormatSpec extends UnitSpec {
 
   implicit val intValueFormat = format(TestIntValue.apply)
 
@@ -66,7 +66,7 @@ class IntValueTypeFormatSpec extends WordSpec with Matchers {
   }
 }
 
-class LongValueTypeFormatSpec extends WordSpec with Matchers {
+class LongValueTypeFormatSpec extends UnitSpec {
 
   implicit val longValueFormat = format(TestLongValue.apply)
 
@@ -87,7 +87,7 @@ class LongValueTypeFormatSpec extends WordSpec with Matchers {
   }
 }
 
-class BooleanValueTypeFormatSpec extends WordSpec with Matchers {
+class BooleanValueTypeFormatSpec extends UnitSpec {
 
   implicit val booleanValueFormat = format(TestBooleanValue.apply)
 
@@ -107,7 +107,7 @@ class BooleanValueTypeFormatSpec extends WordSpec with Matchers {
   }
 }
 
-class BigDecimalValueTypeFormatSpec extends WordSpec with Matchers {
+class BigDecimalValueTypeFormatSpec extends UnitSpec {
 
   implicit val bigDecimalValueFormat = format(TestBigDecimalValue.apply)
 
@@ -128,7 +128,7 @@ class BigDecimalValueTypeFormatSpec extends WordSpec with Matchers {
 
 }
 
-class RoundedBigDecimalValueTypeFormatSpec extends WordSpec with Matchers {
+class RoundedBigDecimalValueTypeFormatSpec extends UnitSpec {
 
   implicit val bigDecimalValueFormat = format(TestRoundedBigDecimalValue.apply)
 
@@ -148,7 +148,7 @@ class RoundedBigDecimalValueTypeFormatSpec extends WordSpec with Matchers {
   }
 }
 
-class ValueTypeFormatSpec extends WordSpec with Matchers {
+class ValueTypeFormatSpec extends UnitSpec {
 
   private case class Weekend(value: String) extends ValueType[String] {
     require(value == "Saturday" || value == "Sunday")

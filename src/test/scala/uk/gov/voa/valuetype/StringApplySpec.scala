@@ -16,9 +16,9 @@
 
 package uk.gov.voa.valuetype
 
-import org.scalatest.{Matchers, WordSpec}
+import uk.gov.voa.valuetype.tooling.UnitSpec
 
-class StringApplySpec extends WordSpec with Matchers {
+class StringApplySpec extends UnitSpec {
 
   sealed trait TestValue extends StringValue
 
@@ -42,7 +42,7 @@ class StringApplySpec extends WordSpec with Matchers {
     }
 
     "throw an IllegalArgumentException for an invalid value" in {
-      an [IllegalArgumentException] should be thrownBy TestValue("C")
+      an[IllegalArgumentException] should be thrownBy TestValue("C")
     }
   }
 }

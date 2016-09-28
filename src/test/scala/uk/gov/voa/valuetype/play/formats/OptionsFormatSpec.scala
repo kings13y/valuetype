@@ -16,11 +16,11 @@
 
 package uk.gov.voa.valuetype.play.formats
 
-import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json._
+import uk.gov.voa.valuetype.tooling.UnitSpec
 import uk.gov.voa.valuetype.{TestIntOption, TestLongOption, TestStringOption}
 
-class OptionsFormatSpec extends WordSpec with Matchers {
+class OptionsFormatSpec extends UnitSpec {
 
   import OptionsFormat._
 

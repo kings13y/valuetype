@@ -16,13 +16,13 @@
 
 package uk.gov.voa.valuetype.play.binders
 
-import org.scalatest.{Matchers, WordSpec}
 import play.api.mvc.PathBindable
 import uk.gov.voa.valuetype.TestIntValue
+import uk.gov.voa.valuetype.tooling.UnitSpec
 
 import scala.util.Try
 
-class ValueTypePathBinderSpec extends WordSpec with Matchers {
+class ValueTypePathBinderSpec extends UnitSpec {
 
   "ValueTypePathBinder.bind" should {
 
@@ -31,7 +31,7 @@ class ValueTypePathBinderSpec extends WordSpec with Matchers {
     }
 
     "bind with an error if given String value is not parsable" in new BindingTestContext {
-      intValueBinder.bind("key", "a") shouldBe a [Left[_, _]]
+      intValueBinder.bind("key", "a") shouldBe a[Left[_, _]]
     }
   }
 

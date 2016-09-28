@@ -19,7 +19,7 @@ package uk.gov.voa.valuetype
 import scala.math.BigDecimal.RoundingMode
 import scala.math.BigDecimal.RoundingMode.RoundingMode
 
-trait ValueType[T] {
+trait ValueType[T] extends TypeName {
 
   def value: T
 
@@ -54,4 +54,16 @@ trait RoundedBigDecimalValue extends ValueType[BigDecimal] {
   protected[this] def isOfThisInstance(other: RoundedBigDecimalValue): Boolean
 
   final override def hashCode: Int = (41 * value).toInt
+}
+
+trait TypeName {
+
+  protected lazy val typeName = getClass.getSimpleName.foldLeft("" -> false) { case ((name, wasDollarFound), char) =>
+    if (wasDollarFound) name -> true
+    else char match {
+      case c if c == '$' => name -> true
+      case c => s"$name$char" -> false
+    }
+  }._1
+
 }
