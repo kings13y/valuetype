@@ -55,15 +55,3 @@ trait RoundedBigDecimalValue extends ValueType[BigDecimal] {
 
   final override def hashCode: Int = (41 * value).toInt
 }
-
-trait TypeName {
-
-  protected lazy val typeName = getClass.getSimpleName.foldLeft("" -> false) { case ((name, wasDollarFound), char) =>
-    if (wasDollarFound) name -> true
-    else char match {
-      case c if c == '$' => name -> true
-      case c => s"$name$char" -> false
-    }
-  }._1
-
-}

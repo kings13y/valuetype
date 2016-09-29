@@ -23,6 +23,20 @@ import uk.gov.voa.valuetype.tooling.UnitSpec
 
 import scala.math.BigDecimal.RoundingMode
 
+class ValueTypeSpec extends UnitSpec {
+
+  "ValueType" should {
+
+    "provide type name" in {
+      case class NestedType(value: Int) extends ValueType[Int]
+
+      NestedType(1).typeName shouldBe "NestedType"
+
+    }
+
+  }
+}
+
 class StringValueSpec extends UnitSpec with PropertyChecks {
 
   val generatedStrings = Gen.alphaStr
@@ -218,33 +232,5 @@ class RoundedBigDecimalValueSpec extends UnitSpec with PropertyChecks {
       TestRoundedBigDecimalValue(2.005) == AnotherRoundedBigDecimalValue(2.005) shouldBe false
       TestRoundedBigDecimalValue(2.0049) == AnotherRoundedBigDecimalValue(2.049) shouldBe false
     }
-  }
-}
-
-private case class NotNestedType(value: String) extends StringValue {
-  val name = typeName
-}
-
-class TypeNameSpec extends UnitSpec {
-
-
-  "TypeName" should {
-
-    "provide type name" in {
-      case class NestedType(value: String) extends StringValue {
-        val name = typeName
-      }
-
-      NotNestedType("abc").name shouldBe "NotNestedType"
-    }
-
-    "provide type name without dollar sign for nested types" in {
-      case class NestedType(value: String) extends StringValue {
-        val name = typeName
-      }
-
-      NestedType("abc").name shouldBe "NestedType"
-    }
-
   }
 }

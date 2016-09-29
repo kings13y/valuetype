@@ -60,6 +60,14 @@ class IntValueTypeFormatSpec extends UnitSpec {
       fromJson(JsString("1")) shouldBe a [JsError]
     }
 
+    "fail deserialization if the value is not an integer" in {
+      fromJson(JsNumber(1.1)) shouldBe a [JsError]
+    }
+
+    "fail deserialization if the value is not a number" in {
+      JsString("1").validate[TestIntValue] shouldBe a [JsError]
+    }
+
     "fail deserialization if the value is out of range" in {
       fromJson(JsNumber(1L + Int.MaxValue.toLong)) shouldBe a [JsError]
     }
@@ -81,8 +89,12 @@ class LongValueTypeFormatSpec extends UnitSpec {
       fromJson(JsNumber(1L + Int.MaxValue.toLong)).get shouldBe TestLongValue(1L + Int.MaxValue.toLong)
     }
 
-    "fail deserialization when given json has the wrong type" in {
-      fromJson(JsString("1")) shouldBe a [JsError]
+    "fail deserialization if the value is not an integer" in {
+      JsNumber(1.1).validate[TestLongValue] shouldBe a [JsError]
+    }
+
+    "fail deserialization if the value is not a number" in {
+      JsString("1").validate[TestLongValue] shouldBe a [JsError]
     }
   }
 }

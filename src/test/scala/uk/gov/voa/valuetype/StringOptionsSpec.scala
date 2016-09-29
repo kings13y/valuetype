@@ -22,6 +22,14 @@ class StringOptionsSpec extends UnitSpec {
 
   import TestStringOption._
 
+  "typeName" should {
+
+    "provide type name" in {
+      TestStringOption.typeName shouldBe "TestStringOption"
+    }
+
+  }
+
   "all" should {
 
     "return all items" in {
