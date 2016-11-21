@@ -37,7 +37,7 @@ class StringValueTypeFormatSpec extends UnitSpec {
     }
 
     "fail deserialization when given json has the wrong type" in {
-      fromJson(JsNumber(1)) shouldBe a [JsError]
+      fromJson(JsNumber(1)) shouldBe a[JsError]
     }
   }
 }
@@ -57,19 +57,19 @@ class IntValueTypeFormatSpec extends UnitSpec {
     }
 
     "fail deserialization when given json has the wrong type" in {
-      fromJson(JsString("1")) shouldBe a [JsError]
+      fromJson(JsString("1")) shouldBe a[JsError]
     }
 
     "fail deserialization if the value is not an integer" in {
-      fromJson(JsNumber(1.1)) shouldBe a [JsError]
+      fromJson(JsNumber(1.1)) shouldBe a[JsError]
     }
 
     "fail deserialization if the value is not a number" in {
-      JsString("1").validate[TestIntValue] shouldBe a [JsError]
+      JsString("1").validate[TestIntValue] shouldBe a[JsError]
     }
 
     "fail deserialization if the value is out of range" in {
-      fromJson(JsNumber(1L + Int.MaxValue.toLong)) shouldBe a [JsError]
+      fromJson(JsNumber(1L + Int.MaxValue.toLong)) shouldBe a[JsError]
     }
   }
 }
@@ -90,11 +90,11 @@ class LongValueTypeFormatSpec extends UnitSpec {
     }
 
     "fail deserialization if the value is not an integer" in {
-      JsNumber(1.1).validate[TestLongValue] shouldBe a [JsError]
+      JsNumber(1.1).validate[TestLongValue] shouldBe a[JsError]
     }
 
     "fail deserialization if the value is not a number" in {
-      JsString("1").validate[TestLongValue] shouldBe a [JsError]
+      JsString("1").validate[TestLongValue] shouldBe a[JsError]
     }
   }
 }
@@ -114,7 +114,7 @@ class BooleanValueTypeFormatSpec extends UnitSpec {
     }
 
     "fail deserialization when given json has the wrong type" in {
-      fromJson(JsNumber(0)) shouldBe a [JsError]
+      fromJson(JsNumber(0)) shouldBe a[JsError]
     }
   }
 }
@@ -134,7 +134,7 @@ class BigDecimalValueTypeFormatSpec extends UnitSpec {
     }
 
     "fail deserialization when given json has the wrong type" in {
-      fromJson[TestBigDecimalValue](JsString("1")) shouldBe a [JsError]
+      fromJson[TestBigDecimalValue](JsString("1")) shouldBe a[JsError]
     }
   }
 
@@ -155,41 +155,74 @@ class RoundedBigDecimalValueTypeFormatSpec extends UnitSpec {
     }
 
     "fail deserialization when given json has the wrong type" in {
-      fromJson[TestRoundedBigDecimalValue](JsString("1")) shouldBe a [JsError]
+      fromJson[TestRoundedBigDecimalValue](JsString("1")) shouldBe a[JsError]
     }
   }
 }
 
 class ValueTypeFormatSpec extends UnitSpec {
 
-  private case class Weekend(value: String) extends ValueType[String] {
-    require(value == "Saturday" || value == "Sunday")
+  "reads" should {
+
+    "allow to deserialize given json into an object" in {
+
+      implicit val stringValueReads = reads(TestStringValue.apply)
+
+      fromJson(JsString("value")).get shouldBe TestStringValue("value")
+    }
+
   }
 
-  private implicit val weekendFormat = format(Weekend)
+  "writes" should {
+
+    "allow to serialize given object into a json" in {
+
+      implicit val stringValueReads = writes[Int, TestIntValue]
+
+      toJson(TestIntValue(1)) shouldBe JsNumber(1)
+    }
+
+    "allow to serialize given StringValue object into a json" in {
+
+      implicit val stringValueReads = writes[TestStringValue]
+
+      toJson(TestStringValue("value")) shouldBe JsString("value")
+    }
+
+  }
 
   "serializing a value type" should {
 
-    "produce the correct JSON" in {
+    "produce the correct JSON" in new TestCase {
       toJson(Weekend("Saturday")) shouldBe JsString("Saturday")
     }
   }
 
   "deserializing a value type" should {
 
-    "produce the correct object for valid JSON" in {
+    "produce the correct object for valid JSON" in new TestCase {
       fromJson(JsString("Sunday")).get shouldBe Weekend("Sunday")
     }
 
-    "fail when given JSON has the wrong type" in {
-      fromJson[Weekend](JsNumber(2)) shouldBe a [JsError]
-      fromJson[Weekend](JsBoolean(true)) shouldBe a [JsError]
-      fromJson[Weekend](Json.arr("Saturday", "Sunday")) shouldBe a [JsError]
-      fromJson[Weekend](Json.obj("day" -> "Saturday")) shouldBe a [JsError]
+    "fail when given JSON has the wrong type" in new TestCase {
+      fromJson[Weekend](JsNumber(2)) shouldBe a[JsError]
+      fromJson[Weekend](JsBoolean(true)) shouldBe a[JsError]
+      fromJson[Weekend](Json.arr("Saturday", "Sunday")) shouldBe a[JsError]
+      fromJson[Weekend](Json.obj("day" -> "Saturday")) shouldBe a[JsError]
     }
 
-    "fail when given JSON contains an invalid value" in {
-      fromJson[Weekend](JsString("Monday")) shouldBe a [JsError]
+    "fail when given JSON contains an invalid value" in new TestCase {
+      fromJson[Weekend](JsString("Monday")) shouldBe a[JsError]
     }
   }
+
+  private trait TestCase {
+
+    case class Weekend(value: String) extends ValueType[String] {
+      require(value == "Saturday" || value == "Sunday")
+    }
+
+    implicit val weekendFormat: Format[Weekend] = format(Weekend)
+  }
+
 }

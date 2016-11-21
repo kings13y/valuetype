@@ -17,8 +17,9 @@
 package uk.gov.voa.valuetype.play.formats
 
 import play.api.libs.json._
-import uk.gov.voa.valuetype.ValueType
+import uk.gov.voa.valuetype.{StringValue, ValueType}
 
+import scala.reflect.ClassTag
 import scala.util.{Failure, Success, Try}
 
 object ValueTypeFormat extends ValueTypeFormat
@@ -51,16 +52,30 @@ trait ValueTypeFormat {
   implicit val bigDecimalToJson = (value: BigDecimal) => JsNumber.apply(value)
   implicit val booleanToJson = JsBoolean.apply _
 
-  def format[T, V <: ValueType[T]](instantiateFromSimpleType: T => V)
-                                  (implicit parse: PartialFunction[JsValue, T],
-                                   toJson: T => JsValue) =
-    new Format[V] {
+  def reads[T, V <: ValueType[T]](instantiateFromSimpleType: T => V)
+                                 (implicit parse: PartialFunction[JsValue, T]) =
+    new Reads[V] {
 
       def reads(json: JsValue): JsResult[V] = Try(parse(json)).flatMap(t => Try(instantiateFromSimpleType(t))) match {
         case Success(value) => JsSuccess(value)
         case Failure(e) => JsError(e.getMessage)
       }
-
-      def writes(value: V): JsValue = toJson(value.value)
     }
+
+  def writes[T, V <: ValueType[T]](implicit toJson: T => JsValue) = new Writes[V] {
+
+    def writes(value: V): JsValue = toJson(value.value)
+
+  }
+
+  def writes[V <: StringValue](implicit classTag: ClassTag[V]) = new Writes[V] {
+
+    def writes(value: V): JsValue = JsString(value.value)
+
+  }
+
+  def format[T, V <: ValueType[T]](instantiateFromSimpleType: T => V)
+                                  (implicit parse: PartialFunction[JsValue, T],
+                                   toJson: T => JsValue) =
+    Format[V](reads(instantiateFromSimpleType), writes[T, V])
 }

@@ -62,22 +62,22 @@ class OptionsFormatSpec extends UnitSpec {
       Json.fromJson(JsNumber(5)) shouldBe JsSuccess(TestOption5)
     }
 
-    "return a deserialization error when deserializing a value for a non-exisitent option" in {
+    "return a deserialization error when deserializing a value for a non-existent option" in {
       Json.fromJson(JsNumber(0)) shouldBe a [JsError]
     }
 
     "return a deserialization error when deserializing a non-integer numeric value" in {
-      implicit val format = optionsFormat(TestStringOption)
+      implicit val format = optionsFormat(TestIntOption)
       Json.fromJson(JsNumber(5.1)) shouldBe a [JsError]
     }
 
     "return a deserialization error when deserializing an integer numeric value that is too large" in {
-      implicit val format = optionsFormat(TestStringOption)
+      implicit val format = optionsFormat(TestIntOption)
       Json.fromJson(JsNumber(Long.MaxValue)) shouldBe a [JsError]
     }
 
     "return a deserialization error when deserializing a non-numeric value" in {
-      implicit val format = optionsFormat(TestStringOption)
+      implicit val format = optionsFormat(TestIntOption)
       Json.fromJson(JsString("5")) shouldBe a [JsError]
     }
   }
@@ -101,12 +101,12 @@ class OptionsFormatSpec extends UnitSpec {
     }
 
     "return a deserialization error when deserializing a non-integer numeric value" in {
-      implicit val format = optionsFormat(TestStringOption)
+      implicit val format = optionsFormat(TestLongOption)
       Json.fromJson(JsNumber(5.1)) shouldBe a [JsError]
     }
 
     "return a deserialization error when deserializing a non-numeric value" in {
-      implicit val format = optionsFormat(TestStringOption)
+      implicit val format = optionsFormat(TestLongOption)
       Json.fromJson(JsString("5")) shouldBe a [JsError]
     }
   }
