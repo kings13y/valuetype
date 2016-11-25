@@ -52,8 +52,8 @@ trait ValueTypeFormat {
   implicit val bigDecimalToJson = (value: BigDecimal) => JsNumber.apply(value)
   implicit val booleanToJson = JsBoolean.apply _
 
-  def reads[T, V <: ValueType[T]](instantiateFromSimpleType: T => V)
-                                 (implicit parse: PartialFunction[JsValue, T]) =
+  def valueTypeReadsFor[T, V <: ValueType[T]](instantiateFromSimpleType: T => V)
+                                             (implicit parse: PartialFunction[JsValue, T]) =
     new Reads[V] {
 
       def reads(json: JsValue): JsResult[V] = Try(parse(json)).flatMap(t => Try(instantiateFromSimpleType(t))) match {
@@ -62,13 +62,13 @@ trait ValueTypeFormat {
       }
     }
 
-  def writes[T, V <: ValueType[T]](implicit toJson: T => JsValue) = new Writes[V] {
+  def valueTypeWritesFor[T, V <: ValueType[T]](implicit toJson: T => JsValue) = new Writes[V] {
 
     def writes(value: V): JsValue = toJson(value.value)
 
   }
 
-  def writes[V <: StringValue](implicit classTag: ClassTag[V]) = new Writes[V] {
+  def valueTypeWritesFor[V <: StringValue](implicit classTag: ClassTag[V]) = new Writes[V] {
 
     def writes(value: V): JsValue = JsString(value.value)
 
@@ -77,5 +77,5 @@ trait ValueTypeFormat {
   def format[T, V <: ValueType[T]](instantiateFromSimpleType: T => V)
                                   (implicit parse: PartialFunction[JsValue, T],
                                    toJson: T => JsValue) =
-    Format[V](reads(instantiateFromSimpleType), writes[T, V])
+    Format[V](valueTypeReadsFor(instantiateFromSimpleType), valueTypeWritesFor[T, V])
 }

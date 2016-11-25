@@ -162,29 +162,29 @@ class RoundedBigDecimalValueTypeFormatSpec extends UnitSpec {
 
 class ValueTypeFormatSpec extends UnitSpec {
 
-  "reads" should {
+  "valueTypeReadsFor" should {
 
     "allow to deserialize given json into an object" in {
 
-      implicit val stringValueReads = reads(TestStringValue.apply)
+      implicit val stringValueReads = valueTypeReadsFor(TestStringValue.apply)
 
       fromJson(JsString("value")).get shouldBe TestStringValue("value")
     }
 
   }
 
-  "writes" should {
+  "valueTypeWritesFor" should {
 
     "allow to serialize given object into a json" in {
 
-      implicit val stringValueReads = writes[Int, TestIntValue]
+      implicit val stringValueReads = valueTypeWritesFor[Int, TestIntValue]
 
       toJson(TestIntValue(1)) shouldBe JsNumber(1)
     }
 
     "allow to serialize given StringValue object into a json" in {
 
-      implicit val stringValueReads = writes[TestStringValue]
+      implicit val stringValueReads = valueTypeWritesFor[TestStringValue]
 
       toJson(TestStringValue("value")) shouldBe JsString("value")
     }
