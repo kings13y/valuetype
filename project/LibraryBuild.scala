@@ -22,6 +22,7 @@ object LibraryBuild extends Build {
     .settings(scalaSettings ++ scoverageSettings: _*)
     .settings(
       targetJvm := "jvm-1.8",
+      scalaVersion := "2.11.8",
       libraryDependencies ++= LibraryDependencies(),
       resolvers := Seq(
         Resolver.bintrayRepo("hmrc", "releases"), "typesafe-releases" at "http://repo.typesafe.com/typesafe/releases/"
