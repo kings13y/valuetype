@@ -34,8 +34,8 @@ object LibraryBuild extends Build {
 private object LibraryDependencies {
 
   val compile = Seq(
-    "com.typesafe.play" %% "play" % "2.3.10" % "provided",
-    "com.typesafe.play" %% "play-json" % "2.3.10" % "provided"
+    "com.typesafe.play" %% "play" % "2.5.8" % "provided",
+    "com.typesafe.play" %% "play-json" % "2.5.8" % "provided"
   )
 
   val test = Seq(
